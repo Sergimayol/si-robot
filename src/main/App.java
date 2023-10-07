@@ -1,5 +1,9 @@
 package main;
 
+import java.util.Arrays;
+import java.util.Scanner;
+
+import agent.Robot;
 import ui.View;
 import utils.Config;
 import utils.Tests;
@@ -10,6 +14,7 @@ public class App {
             // Run tests redirecting output to a file " > tests.txt"
             Tests.runTests();
         }
+
         // View view = new View();
         // view.start();
     }

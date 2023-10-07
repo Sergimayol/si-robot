@@ -1,5 +1,8 @@
 package utils;
 
+import java.util.Arrays;
+import java.util.Scanner;
+
 import agent.Direction;
 import agent.Robot;
 
@@ -9,6 +12,7 @@ public class Tests {
         testTrap();
         testWalls();
         testDefault();
+        miniDemo();
     }
 
     private static void testCorners() {
@@ -54,7 +58,7 @@ public class Tests {
         robot.update(t, t, t, t, f, f, f, t);
         System.out.println(robot.getDirection() == Direction.WEST);
         // LEFT
-        robot.update(f, t, t, t, t, t, f, f);
+        robot.update(t, t, t, t, t, t, t, t);
         System.out.println(robot.getDirection() == Direction.NORTH);
     }
 
@@ -66,4 +70,84 @@ public class Tests {
         System.out.println(robot.getDirection() == Direction.NORTH);
     }
 
+    private static void miniDemo() {
+        boolean t = true;
+        boolean f = false;
+        // Boolean[][] map = {
+        // { f, f, f, f, f, f, f },
+        // { f, t, t, t, t, t, f },
+        // { f, t, t, t, t, t, f },
+        // { f, t, t, t, t, t, f },
+        // { f, t, t, t, t, t, f },
+        // { f, t, t, t, t, t, f },
+        // { f, f, f, f, f, f, f },
+        // };
+        Boolean[][] map = {
+                { f, f, f, f, f, f, f },
+                { f, t, f, t, t, t, f },
+                { f, t, t, t, t, t, f },
+                { f, t, t, t, t, t, f },
+                { f, t, t, t, t, t, f },
+                { f, t, t, t, t, f, f },
+                { f, f, f, f, f, f, f },
+        };
+        System.out.println(map[0].length);
+        System.out.println(map.length);
+        boolean end = false;
+        Scanner scanner = new Scanner(System.in);
+        Robot robot = new Robot();
+        while (!end) {
+            map[robot.getPoint().y][robot.getPoint().x] = null;
+            printMap(map);
+            System.out.println("Next Step [y/n]: ");
+            char x = (char) scanner.next().charAt(0);
+            if (x == 'n') {
+                end = true;
+                continue;
+            }
+            boolean[] sensors = sense(map, robot);
+            System.out.println("Sensors: " + Arrays.toString(sensors));
+            map[robot.getPoint().y][robot.getPoint().x] = true;
+            robot.update(sensors[0], sensors[1], sensors[2], sensors[3], sensors[4], sensors[5], sensors[6],
+                    sensors[7]);
+        }
+
+    }
+
+    private static boolean[] sense(Boolean[][] map, Robot robot) {
+        // Get the surrounding cells
+        int x = robot.getPoint().x;
+        int y = robot.getPoint().y;
+        boolean[] sensors = new boolean[8];
+        // Top left
+        sensors[0] = map[y - 1][x - 1];
+        // Top
+        sensors[1] = map[y - 1][x];
+        // Top right
+        sensors[2] = map[y - 1][x + 1];
+        // Right
+        sensors[3] = map[y][x + 1];
+        // Bottom right
+        sensors[4] = map[y + 1][x + 1];
+        // Bottom
+        sensors[5] = map[y + 1][x];
+        // Bottom left
+        sensors[6] = map[y + 1][x - 1];
+        // Left
+        sensors[7] = map[y][x - 1];
+        return sensors;
+    }
+
+    private static void printMap(Boolean[][] map) {
+        for (Boolean[] row : map) {
+            for (Boolean cell : row) {
+                if (cell == null) {
+                    System.out.print("x");
+                    continue;
+                }
+                System.out.print(cell ? "1" : "0");
+            }
+            System.out.println();
+        }
+    }
 }

@@ -11,7 +11,7 @@ public class Robot {
     private BC bc;
 
     public Robot() {
-        point = new Point(0, 0);
+        point = new Point(1, 1);
         direction = Direction.NORTH;
         bc = new BC();
         this.initBC();
@@ -23,30 +23,6 @@ public class Robot {
             case WEST -> point.x--;
             case SOUTH -> point.y++;
             case EAST -> point.x++;
-            case NONE -> {
-                // Do nothing
-            }
-        }
-    }
-
-    public void turnLeft() {
-        switch (direction) {
-            case NORTH -> direction = Direction.WEST;
-            case WEST -> direction = Direction.SOUTH;
-            case SOUTH -> direction = Direction.EAST;
-            case EAST -> direction = Direction.NORTH;
-            case NONE -> {
-                // Do nothing
-            }
-        }
-    }
-
-    public void turnRight() {
-        switch (direction) {
-            case NORTH -> direction = Direction.EAST;
-            case WEST -> direction = Direction.NORTH;
-            case SOUTH -> direction = Direction.WEST;
-            case EAST -> direction = Direction.SOUTH;
             case NONE -> {
                 // Do nothing
             }
@@ -71,16 +47,21 @@ public class Robot {
         logger.info("[ROBOT] Initializing BC...");
         boolean t = true;
         boolean f = false;
+        // s1=false, s2=false, s3=false, s4=true, s5=true, s6=true, s7=false, s8=false
         // Trapped
         this.bc.addRule(new Rule(f, f, f, f, f, f, f, f, Direction.NONE));
+
         // Corner top left
-        this.bc.addRule(new Rule(f, f, t, t, t, t, t, f, Direction.EAST)); // DERECHA
+        this.bc.addRule(new Rule(f, f, f, t, t, t, f, f, Direction.EAST)); // DERECHA
         // Corner top right
-        this.bc.addRule(new Rule(t, f, f, f, t, t, t, t, Direction.SOUTH)); // ABAJO
+        this.bc.addRule(new Rule(f, f, f, f, f, t, t, t, Direction.SOUTH)); // ABAJO
         // Corner bottom right
-        this.bc.addRule(new Rule(t, t, t, f, f, f, t, t, Direction.WEST)); // IZQUIERDA
+        this.bc.addRule(new Rule(t, t, f, f, f, f, f, t, Direction.WEST)); // IZQUIERDA
         // Corner bottom left
-        this.bc.addRule(new Rule(t, t, t, t, t, f, f, f, Direction.NORTH)); // ARRIBA
+        this.bc.addRule(new Rule(f, t, t, t, f, f, f, f, Direction.NORTH)); // ARRIBA
+
+        // Basic movement
+        // TODO: Implementar reglas generales
 
         // Wall top
         this.bc.addRule(new Rule(f, f, f, t, t, t, t, t, Direction.EAST)); // DERECHA
