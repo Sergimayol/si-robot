@@ -24,3 +24,7 @@ replay_pid*
 
 **/target/**
 **/bin/**
+**/dist/**
+**/nbproject/**
+**/build/**
+*.xml
