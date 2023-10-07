@@ -2,7 +2,7 @@ package env;
 
 import agent.Robot;
 
-public class Enviroment {
+public class Environment {
     /**
      * s1 = esquina superior izquierda, s3 = esquina superior derecha,
      * s5 = esquina inferior derecha, s7 = esquina inferior izquierda
@@ -13,7 +13,7 @@ public class Enviroment {
     private static final int INPUTS = 8;
     private Robot robot;
 
-    public Enviroment() {
+    public Environment() {
         this.inputs = new boolean[INPUTS];
     }
 
