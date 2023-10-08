@@ -15,8 +15,8 @@ public class App {
             Tests.runTests();
         }
 
-        // View view = new View();
-        // view.start();
+        View view = new View();
+        view.start();
     }
 
 }

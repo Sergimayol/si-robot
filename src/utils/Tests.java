@@ -12,7 +12,7 @@ public class Tests {
         testTrap();
         testWalls();
         testDefault();
-        miniDemo();
+        // miniDemo();
     }
 
     private static void testCorners() {
