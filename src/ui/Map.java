@@ -32,7 +32,14 @@ public class Map extends JPanel {
         }
     }
 
-    public void changeTileSize(int size, boolean initMap) {
+    public void changeMapUIsize(int size, boolean initMap) {
+        this.removeAll();
+        this.changeMapSize(size, initMap);
+        this.paintComponent(this.getGraphics());
+        this.revalidate();
+    }
+
+    public void changeMapSize(int size, boolean initMap) {
         this.tiles = new Tile[size][size];
         if (initMap) {
             this.initMapTiles();
