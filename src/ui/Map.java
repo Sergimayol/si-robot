@@ -32,6 +32,13 @@ public class Map extends JPanel {
         }
     }
 
+    public void changeTileSize(int size, boolean initMap) {
+        this.tiles = new Tile[size][size];
+        if (initMap) {
+            this.initMapTiles();
+        }
+    }
+
     public void setTile(Tile tile) {
         this.tiles[tile.getX()][tile.getY()] = tile;
     }

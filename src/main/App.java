@@ -1,9 +1,5 @@
 package main;
 
-import java.util.Arrays;
-import java.util.Scanner;
-
-import agent.Robot;
 import ui.View;
 import utils.Config;
 import utils.Tests;
