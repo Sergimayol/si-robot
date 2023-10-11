@@ -110,6 +110,17 @@ public class View {
 
         resetImgPanel.add(resetImgBtn);
 
+        JPanel roboPanel = new JPanel();
+        roboPanel.setBackground(Color.WHITE);
+        roboPanel.setLayout(new BoxLayout(roboPanel, BoxLayout.Y_AXIS));
+        JButton roboButton = new JButton(Helpers.escalateImageIcon(Config.APP_UI_ICON_PATH, 64, 64));
+        roboButton.setFont(new Font(fontName, Font.PLAIN, 14));
+        roboButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        roboButton.setMaximumSize(new Dimension(
+                (int) roboButton.getPreferredSize().getWidth() + 10,
+                (int) roboButton.getPreferredSize().getHeight() + 5));
+        roboPanel.add(roboButton);
+
         actionsPanel.add(Box.createVerticalStrut(5));
         actionsPanel.add(solveStrategyPanel);
         actionsPanel.add(Box.createVerticalStrut(15));
@@ -117,7 +128,8 @@ public class View {
         actionsPanel.add(Box.createVerticalStrut(5));
         actionsPanel.add(resetImgPanel);
         actionsPanel.add(Box.createVerticalStrut(5));
-
+        actionsPanel.add(roboPanel);
+        actionsPanel.add(Box.createVerticalStrut(5));
         sideBar.add(actionsPanel);
 
         // Add size to the puzzle
