@@ -1,6 +1,6 @@
-package agent;
+package agent.labels;
 
-public enum Direction {
+public enum LookingAt {
     NORTH,
     WEST,
     SOUTH,

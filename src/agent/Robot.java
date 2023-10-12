@@ -1,40 +1,42 @@
 package agent;
 
 import java.awt.Point;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
-public class Robot {
+import agent.labels.Action;
+import agent.labels.CharacteristicLabels;
+import agent.labels.LookingAt;
+import agent.rules.BC;
+import agent.rules.Characteristic;
+
+public class Robot extends BaseAgent<Executable> {
 
     private Logger logger = Logger.getLogger(Robot.class.getName());
-    private Point point;
-    private Direction direction;
-    private BC bc;
+    private LookingAt direction;
 
     public Robot() {
-        point = new Point(1, 1);
-        direction = Direction.NORTH;
-        bc = new BC();
+        this.position = new Point(-1, -1);
+        this.direction = LookingAt.NORTH;
+        this.bc = new BC<>();
+        this.initCharacteristics();
         this.initBC();
     }
 
-    private void move() {
-        switch (direction) {
-            case NORTH -> point.y--;
-            case WEST -> point.x--;
-            case SOUTH -> point.y++;
-            case EAST -> point.x++;
-            case NONE -> {
-                // Do nothing
-            }
+    private void initCharacteristics() {
+        characteristics = new Characteristic[CharacteristicLabels.values().length];
+        for (int i = 0; i < characteristics.length; i++) {
+            characteristics[i] = new Characteristic(CharacteristicLabels.values()[i].name());
         }
+        logger.info("[ROBOT] Characteristics initialized, there are " + characteristics.length + " characteristics");
     }
 
-    public Point getPoint() {
-        return point;
-    }
-
-    public Direction getDirection() {
+    public LookingAt getDirection() {
         return direction;
+    }
+
+    public void setLooking(LookingAt dir) {
+        this.direction = dir;
     }
 
     /**
@@ -45,52 +47,85 @@ public class Robot {
      */
     private void initBC() {
         logger.info("[ROBOT] Initializing BC...");
-        boolean t = true;
-        boolean f = false;
-        // s1=false, s2=false, s3=false, s4=true, s5=true, s6=true, s7=false, s8=false
         // Trapped
-        this.bc.addRule(new Rule(f, f, f, f, f, f, f, f, Direction.NONE));
+        this.addRule(new CharacteristicLabels[] {
+                CharacteristicLabels.WALL_N,
+                CharacteristicLabels.WALL_E,
+                CharacteristicLabels.WALL_S,
+                CharacteristicLabels.WALL_W },
+                Action.DO_NOTHING);
+        // Corners
+        this.addRule(new CharacteristicLabels[] {
+                CharacteristicLabels.NOT_WALL_N,
+                CharacteristicLabels.WALL_NW,
+                CharacteristicLabels.LOOKING_EAST },
+                Action.MOVE_NORTH);
+        this.addRule(new CharacteristicLabels[] {
+                CharacteristicLabels.NOT_WALL_E,
+                CharacteristicLabels.WALL_NE,
+                CharacteristicLabels.LOOKING_SOUTH },
+                Action.MOVE_EAST);
+        this.addRule(new CharacteristicLabels[] {
+                CharacteristicLabels.NOT_WALL_S,
+                CharacteristicLabels.WALL_SE,
+                CharacteristicLabels.LOOKING_WEST },
+                Action.MOVE_SOUTH);
+        this.addRule(new CharacteristicLabels[] {
+                CharacteristicLabels.NOT_WALL_W,
+                CharacteristicLabels.WALL_SW,
+                CharacteristicLabels.LOOKING_NORTH },
+                Action.MOVE_WEST);
+        // Movements to conservate looking direction
+        this.addRule(new CharacteristicLabels[] {
+                CharacteristicLabels.NOT_WALL_N,
+                CharacteristicLabels.WALL_W,
+                CharacteristicLabels.LOOKING_NORTH },
+                Action.MOVE_NORTH);
+        this.addRule(new CharacteristicLabels[] {
+                CharacteristicLabels.NOT_WALL_E,
+                CharacteristicLabels.WALL_N,
+                CharacteristicLabels.LOOKING_EAST },
+                Action.MOVE_EAST);
+        this.addRule(new CharacteristicLabels[] {
+                CharacteristicLabels.NOT_WALL_S,
+                CharacteristicLabels.WALL_E,
+                CharacteristicLabels.LOOKING_SOUTH },
+                Action.MOVE_SOUTH);
+        this.addRule(new CharacteristicLabels[] {
+                CharacteristicLabels.NOT_WALL_W,
+                CharacteristicLabels.WALL_S,
+                CharacteristicLabels.LOOKING_WEST },
+                Action.MOVE_WEST);
 
-        // Corner top left
-        this.bc.addRule(new Rule(f, f, f, t, t, t, f, f, Direction.EAST)); // DERECHA
-        // Corner top right
-        this.bc.addRule(new Rule(f, f, f, f, f, t, t, t, Direction.SOUTH)); // ABAJO
-        // Corner bottom right
-        this.bc.addRule(new Rule(t, t, f, f, f, f, f, t, Direction.WEST)); // IZQUIERDA
-        // Corner bottom left
-        this.bc.addRule(new Rule(f, t, t, t, f, f, f, f, Direction.NORTH)); // ARRIBA
+        // Basic movements
+        this.addRule(new CharacteristicLabels[] { CharacteristicLabels.NOT_WALL_N, CharacteristicLabels.WALL_W },
+                Action.MOVE_NORTH);
+        this.addRule(new CharacteristicLabels[] { CharacteristicLabels.NOT_WALL_E, CharacteristicLabels.WALL_N },
+                Action.MOVE_EAST);
+        this.addRule(new CharacteristicLabels[] { CharacteristicLabels.NOT_WALL_S, CharacteristicLabels.WALL_E },
+                Action.MOVE_SOUTH);
+        this.addRule(new CharacteristicLabels[] { CharacteristicLabels.NOT_WALL_W, CharacteristicLabels.WALL_S },
+                Action.MOVE_WEST);
 
-        // Basic movement
-        // TODO: Implementar reglas generales
-
-        // Wall top
-        this.bc.addRule(new Rule(f, f, f, t, t, t, t, t, Direction.EAST)); // DERECHA
-        // Wall right
-        this.bc.addRule(new Rule(t, t, f, f, f, t, t, t, Direction.SOUTH)); // ABAJO
-        // Wall bottom
-        this.bc.addRule(new Rule(t, t, t, t, f, f, f, t, Direction.WEST)); // IZQUIERDA
-        // Wall left
-        this.bc.addRule(new Rule(f, t, t, t, t, t, f, f, Direction.NORTH)); // ARRIBA
-
-        // Default
-        this.bc.addRule(new Rule(t, t, t, t, t, t, t, t, Direction.NORTH));
+        // Default action
+        this.addRule(new CharacteristicLabels[] {}, Action.MOVE_NORTH);
         logger.info("[ROBOT] BC initialized");
     }
 
-    public void update(boolean s1, boolean s2, boolean s3, boolean s4, boolean s5, boolean s6, boolean s7, boolean s8) {
-        logger.info("[ROBOT] received the following sensors: s1=" + s1 + ", s2=" + s2 + ", s3=" + s3 + ", s4=" + s4
-                + ", s5=" + s5 + ", s6=" + s6 + ", s7=" + s7 + ", s8=" + s8);
-        Rule rule = this.bc.getRule(s1, s2, s3, s4, s5, s6, s7, s8);
-        this.direction = rule.direction();
-        logger.info("[ROBOT] calculated the following direction: " + this.direction);
-        this.move();
-    }
+    @Override
+    public void processInputSensors(boolean[] sensors) {
+        logger.info("[ROBOT] Processing input sensors... (" + Arrays.toString(sensors) + ")");
+        for (int i = 0; i < sensors.length; i++) {
+            characteristics[i * 2].setValue(sensors[i]);
+            characteristics[(i * 2) + 1].setValue(!sensors[i]);
+        }
 
-    /**
-     * !Made for testing purposes, DO NOT USE
-     */
-    public void setPoint(Point point) {
-        this.point = point;
+        characteristics[16].setValue(false);
+        characteristics[17].setValue(false);
+        characteristics[18].setValue(false);
+        characteristics[19].setValue(false);
+        characteristics[characteristics.length - (4 - this.direction.ordinal())].setValue(true);
+        logger.info("[ROBOT] Input sensors processed, new characteristics are: " + Arrays.toString(characteristics));
     }
 
 }
