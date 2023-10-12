@@ -2,15 +2,21 @@ package ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -18,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 
 import org.smm.betterswing.Section;
 import org.smm.betterswing.Window;
@@ -119,8 +126,19 @@ public class View {
         roboButton.setMaximumSize(new Dimension(
                 (int) roboButton.getPreferredSize().getWidth() + 10,
                 (int) roboButton.getPreferredSize().getHeight() + 5));
-        roboPanel.add(roboButton);
 
+        roboButton.addActionListener(e -> {
+            Toolkit toolkit = Toolkit.getDefaultToolkit();
+            Point hotSpot = new Point(0, 0);
+            ImageIcon icon2 = Helpers.escalateImageIcon(Config.APP_UI_ICON_PATH, 64, 64);
+            Image image = icon2.getImage();
+            Cursor cursor = toolkit.createCustomCursor(image,
+                    hotSpot, "Cursor");
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(roboPanel);
+            frame.setCursor(cursor);
+
+        });
+        roboPanel.add(roboButton);
         actionsPanel.add(Box.createVerticalStrut(5));
         actionsPanel.add(solveStrategyPanel);
         actionsPanel.add(Box.createVerticalStrut(15));
