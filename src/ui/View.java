@@ -18,6 +18,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -208,11 +209,27 @@ public class View {
         this.splitPane.setBorder(null);
     }
 
+    private void resetMap() {
+        map.changeMapUIsize(mapSize, true); // Restablece el mapa al tamaño original
+        map.repaint(); // Actualiza la vista
+    }
+
+    private void cleanMap() {
+        map.cleanMap(); // Limpia el mapa
+        map.repaint(); // Actualiza la vista
+    }
+
     private JMenuBar creatMenuBar() {
-        logger.info("[VIEW] Creating menu bar...");
         JMenuBar menuBar = new JMenuBar();
-        JMenuItem menuItem = new JMenuItem("A text-only menu item");
-        menuBar.add(menuItem);
+        JMenu fileMenu = new JMenu("Menú");
+        JMenuItem resetMenuItem = new JMenuItem("Reiniciar");
+        JMenuItem cleanMenuItem = new JMenuItem("Limpiar");
+        resetMenuItem.addActionListener(e -> resetMap());
+        cleanMenuItem.addActionListener(e -> cleanMap());
+        fileMenu.add(resetMenuItem);
+        fileMenu.add(cleanMenuItem);
+        menuBar.add(fileMenu);
+
         return menuBar;
     }
 }
