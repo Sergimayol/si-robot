@@ -128,15 +128,7 @@ public class View {
                 (int) roboButton.getPreferredSize().getHeight() + 5));
 
         roboButton.addActionListener(e -> {
-            Toolkit toolkit = Toolkit.getDefaultToolkit();
-            Point hotSpot = new Point(0, 0);
-            ImageIcon icon2 = Helpers.escalateImageIcon(Config.APP_UI_ICON_PATH, 64, 64);
-            Image image = icon2.getImage();
-            Cursor cursor = toolkit.createCustomCursor(image,
-                    hotSpot, "Cursor");
-            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(roboPanel);
-            frame.setCursor(cursor);
-
+            // Iniciar programa
         });
         roboPanel.add(roboButton);
         actionsPanel.add(Box.createVerticalStrut(5));

@@ -64,6 +64,9 @@ public class Tile extends JPanel {
                 if (Tile.this.isRobot) {
                     return;
                 }
+                if (evt.getButton() == MouseEvent.BUTTON3) {
+                    Tile.this.isRobot = !Tile.this.isRobot;
+                }
                 Tile.this.isObstacle = !Tile.this.isObstacle;
                 Tile.this.repaint();
             }
