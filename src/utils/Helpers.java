@@ -24,4 +24,13 @@ public class Helpers {
         Image image = new ImageIcon(iconPath).getImage();
         return new ImageIcon(image.getScaledInstance(width, height, Image.SCALE_SMOOTH));
     }
+
+    public static void wait(int milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
 }

@@ -1,7 +1,6 @@
 package agent;
 
 import java.awt.Point;
-import java.util.Arrays;
 
 import agent.labels.CharacteristicLabels;
 import agent.rules.BC;
@@ -24,7 +23,6 @@ public abstract class BaseAgent<T> {
         for (int i = 0; i < indices.length; i++) {
             indicesInt[i] = indices[i].ordinal();
         }
-        System.out.println(Arrays.toString(indicesInt));
         this.bc.addProdRule(new Rule<>(new Condition(selectCharacteristics(this.characteristics, indicesInt)), action));
     }
 

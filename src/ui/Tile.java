@@ -13,9 +13,9 @@ import javax.swing.JPanel;
 
 public class Tile extends JPanel {
 
-    Logger logger = Logger.getLogger(this.getClass().getSimpleName());
-    private BufferedImage image;
-    private BufferedImage robotImage;
+    private transient Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+    private transient BufferedImage image;
+    private transient BufferedImage robotImage;
     private Color tileColor;
     private Point position;
     private boolean isObstacle;
@@ -42,18 +42,18 @@ public class Tile extends JPanel {
         this.image = image;
     }
 
+    public Point getPosition() {
+        return this.position;
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         final int width = this.getWidth();
         final int height = this.getHeight();
-        if (this.isRobot) {
-            g2d.setColor(Color.GREEN); // Cambia el color a verde si isRobot es true para cambiar de color
-                                       // las casillas visitadas
-        } else {
-            g2d.setColor(this.tileColor); // Usa el color original si isRobot es false
-        }
+        this.setBackground(this.tileColor);
+        g2d.setColor(this.tileColor);
         g2d.fillRect(0, 0, width, height);
         if (this.isObstacle || this.isRobot) {
             g2d.drawImage(this.isRobot ? this.robotImage : this.image, 0, 0, width, height, null);
@@ -87,16 +87,19 @@ public class Tile extends JPanel {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                // tileColor = Color.RED;
-                // Tile.this.repaint();
+                // Do nothing
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                // tileColor = Color.WHITE;
-                // Tile.this.repaint();
+                // Do nothing
             }
         };
+    }
+
+    @Override
+    public String toString() {
+        return "Tile [position=" + position + ", isObstacle=" + isObstacle + ", isRobot=" + isRobot + "]";
     }
 
 }

@@ -9,7 +9,7 @@ import agent.Executable;
 
 public class Environment<T extends BaseAgent<Executable>> {
 
-    Logger logger = Logger.getLogger(Environment.class.getName());
+    private Logger logger = Logger.getLogger(Environment.class.getName());
     private boolean[][] map;
     private T agent;
 
@@ -42,10 +42,17 @@ public class Environment<T extends BaseAgent<Executable>> {
         return this.agent;
     }
 
+    public boolean[][] getMap() {
+        return this.map;
+    }
+
+    public void setMap(boolean[][] map) {
+        this.map = map;
+    }
+
     public void runNextMovement() {
-        printMap();
         boolean[] perceptions = this.getPerceptions(this.agent);
-        System.out.println(Arrays.toString(perceptions));
+        logger.info("Perceptions: " + Arrays.toString(perceptions));
         ((BaseAgent<Executable>) this.agent).processInputSensors(perceptions);
         ((BaseAgent<Executable>) this.agent).checkBC().execute(this.agent);
         logger.info("Agent position: " + ((BaseAgent<Executable>) agent).getPosition());
@@ -54,8 +61,7 @@ public class Environment<T extends BaseAgent<Executable>> {
     public boolean[] getPerceptions(T agent) {
         boolean[] perceptions = new boolean[8];
         int idx = 0;
-        Point robotPos = ((BaseAgent<Executable>) agent).getPosition();
-        System.out.println("Robot position: " + robotPos);
+        final Point robotPos = ((BaseAgent<Executable>) agent).getPosition();
         for (int y = robotPos.y - 1; y <= robotPos.y + 1; y++) {
             for (int x = robotPos.x - 1; x <= robotPos.x + 1; x++) {
                 if (x == robotPos.x && y == robotPos.y) {

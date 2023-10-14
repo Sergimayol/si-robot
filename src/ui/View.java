@@ -2,21 +2,16 @@ package ui;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.Point;
-import java.awt.Toolkit;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -26,12 +21,13 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
 
 import org.smm.betterswing.Section;
 import org.smm.betterswing.Window;
 import org.smm.betterswing.utils.DirectionAndPosition;
 
+import agent.Robot;
+import env.Environment;
 import utils.Config;
 import utils.Helpers;
 
@@ -40,14 +36,24 @@ public class View {
     private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
     private Window window;
     private Map map;
+    private Environment<Robot> env;
+    private Robot robot;
     private JSplitPane splitPane;
     private int mapSize;
+    private boolean stop;
 
     public View() {
         this.window = new Window(Config.VIEW_MAIN_WIN_CONFIG_PATH);
         this.window.initConfig();
         this.mapSize = 10;
         this.map = new Map(this.mapSize);
+        this.robot = new Robot();
+        // ------------- TMP -------------
+        this.robot.setPosition(0, 0);
+        // -------------------------------
+        this.env = new Environment<>(this.mapSize);
+        this.env.setAgent(this.robot);
+        this.stop = true;
     }
 
     public void start() {
@@ -63,9 +69,23 @@ public class View {
         logger.info("[VIEW] View started");
     }
 
+    private void runRobot() {
+        final int sleepTime = 500;
+        while (!this.stop) {
+            Tile tile = this.map.getTile(this.robot.getPosition().x, this.robot.getPosition().y);
+            tile.setRobot(false);
+            env.runNextMovement();
+            final Point robotPos = env.getAgent().getPosition();
+            tile = this.map.getTile(robotPos.x, robotPos.y);
+            tile.setRobot(true);
+            this.map.setTile(tile);
+            this.map.repaint();
+            Helpers.wait(sleepTime);
+        }
+    }
+
     private JPanel sideBar() {
         logger.info("[VIEW] Creating side bar...");
-        // TODO: Añadir opciones de cambiar tamaño de mapa y poner y quitar al robot
         JPanel sideBar = new JPanel();
         sideBar.setBackground(Color.WHITE);
         sideBar.setLayout(new GridLayout(3, 1));
@@ -104,7 +124,15 @@ public class View {
         resetImgPanel.setBackground(Color.WHITE);
         resetImgPanel.setLayout(new BoxLayout(resetImgPanel, BoxLayout.Y_AXIS));
         // Crear el JSpinner utilizando el modelo
-        JButton resetImgBtn = new JButton("TODO");
+        JButton resetImgBtn = new JButton("Test Robot");
+        resetImgBtn.addActionListener(e -> {
+            this.stop = !this.stop;
+            final String action = this.stop ? "Stopping" : "Starting";
+            logger.info("[VIEW] " + action + " robot movement ...");
+            if (!this.stop) {
+                Thread.startVirtualThread(this::runRobot);
+            }
+        });
 
         // Personalizar la apariencia del JSpinner
         resetImgBtn.setFont(new Font(fontName, Font.PLAIN, 14));

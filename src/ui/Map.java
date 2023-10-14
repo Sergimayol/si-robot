@@ -54,7 +54,9 @@ public class Map extends JPanel {
     }
 
     public void setTile(Tile tile) {
-        this.tiles[tile.getX()][tile.getY()] = tile;
+        final int x = tile.getPosition().x;
+        final int y = tile.getPosition().y;
+        this.tiles[x][y] = tile;
     }
 
     public Tile getTile(int x, int y) {
