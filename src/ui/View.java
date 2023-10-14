@@ -21,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
@@ -219,15 +220,33 @@ public class View {
         map.repaint(); // Actualiza la vista
     }
 
+    private void showHelpDialog() {
+        String helpMessage = "Click derecho: Añadir/Quitar Robot\nClick izquierdo: Añadir/Quitar Obstáculo";
+        JOptionPane.showMessageDialog(null, helpMessage, "Ayuda", JOptionPane.INFORMATION_MESSAGE);
+    }
+
     private JMenuBar creatMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("Menú");
         JMenuItem resetMenuItem = new JMenuItem("Reiniciar");
         JMenuItem cleanMenuItem = new JMenuItem("Limpiar");
+        JMenuItem exitMenuItem = new JMenuItem("Salir");
+        JMenuItem helpMenuItem = new JMenuItem("Ayuda");
+
         resetMenuItem.addActionListener(e -> resetMap());
         cleanMenuItem.addActionListener(e -> cleanMap());
-        fileMenu.add(resetMenuItem);
+        exitMenuItem.addActionListener(e -> stop());
+        helpMenuItem.addActionListener(e -> showHelpDialog());
+
+        resetMenuItem.setToolTipText("Reiniciar el programa");
+        cleanMenuItem.setToolTipText("Limpiar la pantalla");
+        exitMenuItem.setToolTipText("Salir de la aplicación");
+        helpMenuItem.setToolTipText("Mostrar ayuda");
+
         fileMenu.add(cleanMenuItem);
+        fileMenu.add(resetMenuItem);
+        fileMenu.add(helpMenuItem);
+        fileMenu.add(exitMenuItem);
         menuBar.add(fileMenu);
 
         return menuBar;
