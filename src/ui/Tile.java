@@ -48,8 +48,12 @@ public class Tile extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         final int width = this.getWidth();
         final int height = this.getHeight();
-        this.setBackground(this.tileColor);
-        g2d.setColor(this.tileColor);
+        if (this.isRobot) {
+            g2d.setColor(Color.GREEN); // Cambia el color a verde si isRobot es true para cambiar de color
+                                       // las casillas visitadas
+        } else {
+            g2d.setColor(this.tileColor); // Usa el color original si isRobot es false
+        }
         g2d.fillRect(0, 0, width, height);
         if (this.isObstacle || this.isRobot) {
             g2d.drawImage(this.isRobot ? this.robotImage : this.image, 0, 0, width, height, null);
