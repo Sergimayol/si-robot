@@ -53,8 +53,8 @@ public class Environment<T extends BaseAgent<Executable>> {
     public void runNextMovement() {
         boolean[] perceptions = this.getPerceptions(this.agent);
         logger.info("Perceptions: " + Arrays.toString(perceptions));
-        ((BaseAgent<Executable>) this.agent).processInputSensors(perceptions);
-        ((BaseAgent<Executable>) this.agent).checkBC().execute(this.agent);
+        this.agent.processInputSensors(perceptions);
+        this.agent.checkBC().execute(this.agent);
         logger.info("Agent position: " + ((BaseAgent<Executable>) agent).getPosition());
     }
 
