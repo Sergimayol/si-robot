@@ -8,6 +8,7 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
@@ -16,6 +17,7 @@ import utils.Helpers;
 
 public class Map extends JPanel {
 
+    private transient Logger logger = Logger.getLogger(Map.class.getName());
     private Tile[][] tiles;
 
     public Map(int size) {
@@ -57,6 +59,7 @@ public class Map extends JPanel {
                 }
             }
         }
+        logger.info("Obstacle positions: " + obstaclePositions);
         return obstaclePositions;
     }
 

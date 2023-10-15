@@ -31,7 +31,7 @@ public class Environment<T extends BaseAgent<Executable>> {
     }
 
     public void setObstacleIn(int x, int y, boolean value) {
-        this.map[y][x] = value;
+        this.map[x][y] = value;
     }
 
     public void setAgent(T agent) {

@@ -64,9 +64,19 @@ public class View {
         logger.info("[VIEW] View started");
     }
 
-    private void runRobot() {
+    private void runRobot(Point robotPosition) {
+        List<Point> obstaclePositions = this.map.getObstaclePositions();
+        System.out.println(obstaclePositions);
+        this.robot = new Robot();
+        this.robot.setPosition(robotPosition.x, robotPosition.y);
+        this.env = new Environment<>(this.mapSize);
+        this.env.setAgent(this.robot);
+        for (Point obstaclePosition : obstaclePositions) {
+            this.env.setObstacleIn(obstaclePosition.x, obstaclePosition.y, true);
+        }
         final int sleepTime = 500;
         while (!this.stop) {
+            env.printMap();
             Tile tile = this.map.getTile(this.robot.getPosition().x, this.robot.getPosition().y);
             tile.setRobot(false);
             env.runNextMovement();
@@ -166,23 +176,14 @@ public class View {
             final String action = this.stop ? "Stopping" : "Starting";
             logger.info("[VIEW] " + action + " robot movement ...");
             if (!this.stop) {
-                Point robotPosition = this.map.getRobotPosition();
-                List<Point> obstaclePositions = this.map.getObstaclePositions();
+                final Point robotPosition = this.map.getRobotPosition();
                 if (robotPosition == null) {
                     JOptionPane.showMessageDialog(null, "No se ha encontrado un robot en el mapa", "Error",
                             JOptionPane.ERROR_MESSAGE);
+                    this.stop = !this.stop;
                     return;
                 }
-                this.robot = new Robot();
-                // ------------- TMP -------------
-                this.robot.setPosition(robotPosition.x, robotPosition.y);
-                // -------------------------------
-                this.env = new Environment<>(this.mapSize);
-                this.env.setAgent(this.robot);
-                for (Point obstaclePosition : obstaclePositions) {
-                    this.env.setObstacleIn(obstaclePosition.x, obstaclePosition.y, true);
-                }
-                Thread.startVirtualThread(this::runRobot);
+                Thread.startVirtualThread(() -> runRobot(robotPosition));
             }
         });
         roboPanel.add(roboButton);
