@@ -141,6 +141,8 @@ public class View {
             if (!this.stop) {
                 final Point robotPosition = this.map.getRobotPosition();
                 if (robotPosition == null) {
+                    // Igual es mejor opción que si no se ha seleccionado un punto de inicio, se
+                    // seleccione uno aleatorio o (0, 0)
                     JOptionPane.showMessageDialog(null, "No se ha encontrado un robot en el mapa", "Error",
                             JOptionPane.ERROR_MESSAGE);
                     this.stop = !this.stop;
@@ -168,8 +170,10 @@ public class View {
         // Crear un modelo para el JSpinner con un rango de valores válidos
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(this.mapSize, 1, 50, 1);
         spinnerModel.addChangeListener(e -> {
-            final int size = (int) spinnerModel.getValue();
-            this.map.changeMapUIsize(size, true);
+            // Solo se puede cambiar el tamaño del mapa si el robot no está en ejecución
+            this.stop = true;
+            this.mapSize = (int) spinnerModel.getValue();
+            this.map.changeMapUIsize(this.mapSize, true);
         });
 
         // Crear el JSpinner utilizando el modelo
