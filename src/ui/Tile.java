@@ -65,13 +65,12 @@ public class Tile extends JPanel {
             @Override
             public void mouseClicked(MouseEvent evt) {
                 logger.info("[TILE] Clicked on tile: " + Tile.this.position);
-                if (Tile.this.isRobot) {
-                    return;
+                if (evt.getButton() == MouseEvent.BUTTON1) {
+                    Tile.this.isObstacle = !Tile.this.isObstacle;
                 }
                 if (evt.getButton() == MouseEvent.BUTTON3) {
                     Tile.this.isRobot = !Tile.this.isRobot;
                 }
-                Tile.this.isObstacle = !Tile.this.isObstacle;
                 Tile.this.repaint();
             }
 
