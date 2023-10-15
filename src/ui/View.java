@@ -66,7 +66,6 @@ public class View {
 
     private void runRobot(Point robotPosition) {
         List<Point> obstaclePositions = this.map.getObstaclePositions();
-        System.out.println(obstaclePositions);
         this.robot = new Robot();
         this.robot.setPosition(robotPosition.x, robotPosition.y);
         this.env = new Environment<>(this.mapSize);
@@ -125,42 +124,6 @@ public class View {
 
         final String fontName = "Arial";
 
-        /*
-         * JPanel resetImgPanel = new JPanel();
-         * resetImgPanel.setBackground(Color.WHITE);
-         * resetImgPanel.setLayout(new BoxLayout(resetImgPanel, BoxLayout.Y_AXIS));
-         * // Crear el JSpinner utilizando el modelo
-         * JButton resetImgBtn = new JButton("Test Robot");
-         * resetImgBtn.addActionListener(e -> {
-         * this.stop = !this.stop;
-         * final String action = this.stop ? "Stopping" : "Starting";
-         * logger.info("[VIEW] " + action + " robot movement ...");
-         * if (!this.stop) {
-         * Point robotPosition = this.map.getRobotPosition();
-         * this.robot = new Robot();
-         * // ------------- TMP -------------
-         * this.robot.setPosition(robotPosition.x, robotPosition.y);
-         * // -------------------------------
-         * this.env = new Environment<>(this.mapSize);
-         * this.env.setAgent(this.robot);
-         * Thread.startVirtualThread(this::runRobot);
-         * }
-         * });
-         * 
-         * // Personalizar la apariencia del JSpinner
-         * resetImgBtn.setFont(new Font(fontName, Font.PLAIN, 14));
-         * 
-         * // Put the same start location for both components
-         * resetImgBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-         * 
-         * // Change the size of the puzzle to be the same as the label size
-         * resetImgBtn.setMaximumSize(new Dimension(
-         * (int) resetImgBtn.getPreferredSize().getWidth() + 20,
-         * (int) resetImgBtn.getPreferredSize().getHeight() + 15));
-         * 
-         * resetImgPanel.add(resetImgBtn);
-         */
-
         JPanel roboPanel = new JPanel();
         roboPanel.setBackground(Color.WHITE);
         roboPanel.setLayout(new BoxLayout(roboPanel, BoxLayout.Y_AXIS));
@@ -191,8 +154,6 @@ public class View {
         actionsPanel.add(solveStrategyPanel);
         actionsPanel.add(Box.createVerticalStrut(15));
         actionsPanel.add(heuristicPanel);
-        actionsPanel.add(Box.createVerticalStrut(5));
-        // actionsPanel.add(resetImgPanel);
         actionsPanel.add(Box.createVerticalStrut(5));
         actionsPanel.add(roboPanel);
         actionsPanel.add(Box.createVerticalStrut(5));
