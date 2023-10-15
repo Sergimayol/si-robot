@@ -11,6 +11,9 @@ import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
+import agent.Robot;
+import env.Environment;
+
 public class Tile extends JPanel {
 
     private transient Logger logger = Logger.getLogger(this.getClass().getSimpleName());
@@ -20,14 +23,22 @@ public class Tile extends JPanel {
     private Point position;
     private boolean isObstacle;
     private boolean isRobot;
+    private transient Environment<Robot> environment;
 
-    public Tile(int x, int y, BufferedImage image, BufferedImage robotImage, Color tileColor) {
+    public Tile(int x, int y, BufferedImage image, BufferedImage robotImage, Color tileColor,
+            Environment<Robot> environment) {
         this.position = new Point(x, y);
         this.image = image;
         this.robotImage = robotImage;
         this.tileColor = tileColor;
         this.isObstacle = false;
+        this.isRobot = false;
+        this.environment = environment;
         this.addMouseListener(createMouseListner());
+    }
+
+    public void setEnvironment(Environment<Robot> environment) {
+        this.environment = environment;
     }
 
     public void setObstacle(boolean isObstacle) {
@@ -75,6 +86,8 @@ public class Tile extends JPanel {
                 logger.info("[TILE] Clicked on tile: " + Tile.this.position);
                 if (evt.getButton() == MouseEvent.BUTTON1) {
                     Tile.this.isObstacle = !Tile.this.isObstacle;
+                    Tile.this.environment.setObstacleIn(Tile.this.position.x, Tile.this.position.y,
+                            Tile.this.isObstacle);
                 }
                 if (evt.getButton() == MouseEvent.BUTTON3) {
                     Tile.this.isRobot = !Tile.this.isRobot;

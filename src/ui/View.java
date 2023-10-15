@@ -47,7 +47,9 @@ public class View {
         this.window = new Window(Config.VIEW_MAIN_WIN_CONFIG_PATH);
         this.window.initConfig();
         this.mapSize = 10;
-        this.map = new Map(this.mapSize);
+        this.robot = new Robot();
+        this.env = new Environment<>(this.mapSize);
+        this.map = new Map(this.mapSize, this.env);
         this.stop = true;
     }
 
@@ -66,20 +68,19 @@ public class View {
 
     private void runRobot(Point robotPosition) {
         List<Point> obstaclePositions = this.map.getObstaclePositions();
-        this.robot = new Robot();
         this.robot.setPosition(robotPosition.x, robotPosition.y);
-        this.env = new Environment<>(this.mapSize);
+        this.map.setEnvironment(this.env);
         this.env.setAgent(this.robot);
         for (Point obstaclePosition : obstaclePositions) {
             this.env.setObstacleIn(obstaclePosition.x, obstaclePosition.y, true);
         }
         final int sleepTime = 500;
         while (!this.stop) {
-            env.printMap();
+            // env.printMap();
             Tile tile = this.map.getTile(this.robot.getPosition().x, this.robot.getPosition().y);
             tile.setRobot(false);
-            env.runNextMovement();
-            final Point robotPos = env.getAgent().getPosition();
+            this.env.runNextMovement();
+            final Point robotPos = this.env.getAgent().getPosition();
             tile = this.map.getTile(robotPos.x, robotPos.y);
             tile.setRobot(true);
             this.map.setTile(tile);

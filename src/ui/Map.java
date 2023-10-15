@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
+import agent.Robot;
+import env.Environment;
 import utils.Config;
 import utils.Helpers;
 
@@ -19,10 +21,18 @@ public class Map extends JPanel {
 
     private transient Logger logger = Logger.getLogger(Map.class.getName());
     private Tile[][] tiles;
+    private transient Environment<Robot> environment;
 
     public Map(int size) {
         super();
         this.tiles = new Tile[size][size];
+        this.setLayout(new BorderLayout());
+    }
+
+    public Map(int size, Environment<Robot> environment) {
+        super();
+        this.tiles = new Tile[size][size];
+        this.environment = environment;
         this.setLayout(new BorderLayout());
     }
 
@@ -32,7 +42,16 @@ public class Map extends JPanel {
                 Color tileColor = (i + j) % 2 == 0 ? Color.WHITE : Color.LIGHT_GRAY;
                 BufferedImage image = Helpers.readImage(Config.OBSTACLE_IMG_PATH);
                 BufferedImage robotImage = Helpers.readImage(Config.ROBOT_IMG_PATH);
-                this.tiles[i][j] = new Tile(i, j, image, robotImage, tileColor);
+                this.tiles[i][j] = new Tile(i, j, image, robotImage, tileColor, this.environment);
+            }
+        }
+    }
+
+    public void setEnvironment(Environment<Robot> environment) {
+        this.environment = environment;
+        for (int i = 0; i < this.tiles.length; i++) {
+            for (int j = 0; j < this.tiles[0].length; j++) {
+                this.tiles[i][j].setEnvironment(environment);
             }
         }
     }
