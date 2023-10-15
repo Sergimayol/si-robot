@@ -47,12 +47,6 @@ public class View {
         this.window.initConfig();
         this.mapSize = 10;
         this.map = new Map(this.mapSize);
-        this.robot = new Robot();
-        // ------------- TMP -------------
-        this.robot.setPosition(0, 0);
-        // -------------------------------
-        this.env = new Environment<>(this.mapSize);
-        this.env.setAgent(this.robot);
         this.stop = true;
     }
 
@@ -120,32 +114,41 @@ public class View {
 
         final String fontName = "Arial";
 
-        JPanel resetImgPanel = new JPanel();
-        resetImgPanel.setBackground(Color.WHITE);
-        resetImgPanel.setLayout(new BoxLayout(resetImgPanel, BoxLayout.Y_AXIS));
-        // Crear el JSpinner utilizando el modelo
-        JButton resetImgBtn = new JButton("Test Robot");
-        resetImgBtn.addActionListener(e -> {
-            this.stop = !this.stop;
-            final String action = this.stop ? "Stopping" : "Starting";
-            logger.info("[VIEW] " + action + " robot movement ...");
-            if (!this.stop) {
-                Thread.startVirtualThread(this::runRobot);
-            }
-        });
-
-        // Personalizar la apariencia del JSpinner
-        resetImgBtn.setFont(new Font(fontName, Font.PLAIN, 14));
-
-        // Put the same start location for both components
-        resetImgBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        // Change the size of the puzzle to be the same as the label size
-        resetImgBtn.setMaximumSize(new Dimension(
-                (int) resetImgBtn.getPreferredSize().getWidth() + 20,
-                (int) resetImgBtn.getPreferredSize().getHeight() + 15));
-
-        resetImgPanel.add(resetImgBtn);
+        /*
+         * JPanel resetImgPanel = new JPanel();
+         * resetImgPanel.setBackground(Color.WHITE);
+         * resetImgPanel.setLayout(new BoxLayout(resetImgPanel, BoxLayout.Y_AXIS));
+         * // Crear el JSpinner utilizando el modelo
+         * JButton resetImgBtn = new JButton("Test Robot");
+         * resetImgBtn.addActionListener(e -> {
+         * this.stop = !this.stop;
+         * final String action = this.stop ? "Stopping" : "Starting";
+         * logger.info("[VIEW] " + action + " robot movement ...");
+         * if (!this.stop) {
+         * Point robotPosition = this.map.getRobotPosition();
+         * this.robot = new Robot();
+         * // ------------- TMP -------------
+         * this.robot.setPosition(robotPosition.x, robotPosition.y);
+         * // -------------------------------
+         * this.env = new Environment<>(this.mapSize);
+         * this.env.setAgent(this.robot);
+         * Thread.startVirtualThread(this::runRobot);
+         * }
+         * });
+         * 
+         * // Personalizar la apariencia del JSpinner
+         * resetImgBtn.setFont(new Font(fontName, Font.PLAIN, 14));
+         * 
+         * // Put the same start location for both components
+         * resetImgBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+         * 
+         * // Change the size of the puzzle to be the same as the label size
+         * resetImgBtn.setMaximumSize(new Dimension(
+         * (int) resetImgBtn.getPreferredSize().getWidth() + 20,
+         * (int) resetImgBtn.getPreferredSize().getHeight() + 15));
+         * 
+         * resetImgPanel.add(resetImgBtn);
+         */
 
         JPanel roboPanel = new JPanel();
         roboPanel.setBackground(Color.WHITE);
@@ -158,7 +161,24 @@ public class View {
                 (int) roboButton.getPreferredSize().getHeight() + 5));
 
         roboButton.addActionListener(e -> {
-            // Iniciar programa
+            this.stop = !this.stop;
+            final String action = this.stop ? "Stopping" : "Starting";
+            logger.info("[VIEW] " + action + " robot movement ...");
+            if (!this.stop) {
+                Point robotPosition = this.map.getRobotPosition();
+                if (robotPosition == null) {
+                    JOptionPane.showMessageDialog(null, "No se ha encontrado un robot en el mapa", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                this.robot = new Robot();
+                // ------------- TMP -------------
+                this.robot.setPosition(robotPosition.x, robotPosition.y);
+                // -------------------------------
+                this.env = new Environment<>(this.mapSize);
+                this.env.setAgent(this.robot);
+                Thread.startVirtualThread(this::runRobot);
+            }
         });
         roboPanel.add(roboButton);
         actionsPanel.add(Box.createVerticalStrut(5));
@@ -166,7 +186,7 @@ public class View {
         actionsPanel.add(Box.createVerticalStrut(15));
         actionsPanel.add(heuristicPanel);
         actionsPanel.add(Box.createVerticalStrut(5));
-        actionsPanel.add(resetImgPanel);
+        // actionsPanel.add(resetImgPanel);
         actionsPanel.add(Box.createVerticalStrut(5));
         actionsPanel.add(roboPanel);
         actionsPanel.add(Box.createVerticalStrut(5));

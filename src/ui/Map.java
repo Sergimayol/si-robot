@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
@@ -30,6 +31,18 @@ public class Map extends JPanel {
                 this.tiles[i][j] = new Tile(i, j, image, robotImage, tileColor);
             }
         }
+    }
+
+    public Point getRobotPosition() {
+        for (int i = 0; i < this.tiles.length; i++) {
+            for (int j = 0; j < this.tiles[0].length; j++) {
+                Tile tile = this.tiles[i][j];
+                if (tile.isRobot()) {
+                    return new Point(i, j);
+                }
+            }
+        }
+        return null; // Devuelve null si no se encuentra un robot
     }
 
     public void changeMapUIsize(int size, boolean initMap) {

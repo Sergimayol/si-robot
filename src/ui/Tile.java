@@ -46,6 +46,14 @@ public class Tile extends JPanel {
         return this.position;
     }
 
+    public boolean isObstacle() {
+        return this.isObstacle;
+    }
+
+    public boolean isRobot() {
+        return this.isRobot;
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
