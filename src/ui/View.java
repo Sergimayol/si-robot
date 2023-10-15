@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
@@ -166,6 +167,7 @@ public class View {
             logger.info("[VIEW] " + action + " robot movement ...");
             if (!this.stop) {
                 Point robotPosition = this.map.getRobotPosition();
+                List<Point> obstaclePositions = this.map.getObstaclePositions();
                 if (robotPosition == null) {
                     JOptionPane.showMessageDialog(null, "No se ha encontrado un robot en el mapa", "Error",
                             JOptionPane.ERROR_MESSAGE);
@@ -177,6 +179,9 @@ public class View {
                 // -------------------------------
                 this.env = new Environment<>(this.mapSize);
                 this.env.setAgent(this.robot);
+                for (Point obstaclePosition : obstaclePositions) {
+                    this.env.setObstacleIn(obstaclePosition.x, obstaclePosition.y, true);
+                }
                 Thread.startVirtualThread(this::runRobot);
             }
         });

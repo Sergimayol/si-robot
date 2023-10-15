@@ -6,6 +6,8 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JPanel;
 
@@ -43,6 +45,19 @@ public class Map extends JPanel {
             }
         }
         return null; // Devuelve null si no se encuentra un robot
+    }
+
+    public List<Point> getObstaclePositions() {
+        List<Point> obstaclePositions = new ArrayList<>();
+        for (int i = 0; i < this.tiles.length; i++) {
+            for (int j = 0; j < this.tiles[0].length; j++) {
+                Tile tile = this.tiles[i][j];
+                if (tile.isObstacle()) {
+                    obstaclePositions.add(new Point(i, j));
+                }
+            }
+        }
+        return obstaclePositions;
     }
 
     public void changeMapUIsize(int size, boolean initMap) {
