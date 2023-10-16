@@ -54,13 +54,13 @@ public class Environment<T extends BaseAgent<Executable>> {
         FileLogger.info("[Environment] Perceptions: " + Arrays.toString(perceptions));
         this.agent.processInputSensors(perceptions);
         this.agent.checkBC().execute(this.agent);
-        FileLogger.info("[Environment] Agent position: " + ((BaseAgent<Executable>) agent).getPosition());
+        FileLogger.info("[Environment] Agent position: " + agent.getPosition());
     }
 
     public boolean[] getPerceptions(T agent) {
         boolean[] perceptions = new boolean[8];
         int idx = 0;
-        final Point robotPos = ((BaseAgent<Executable>) agent).getPosition();
+        final Point robotPos = agent.getPosition();
         for (int y = robotPos.y - 1; y <= robotPos.y + 1; y++) {
             for (int x = robotPos.x - 1; x <= robotPos.x + 1; x++) {
                 if (x == robotPos.x && y == robotPos.y) {
