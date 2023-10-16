@@ -75,7 +75,6 @@ public class Environment<T extends BaseAgent<Executable>> {
                 idx++;
             }
         }
-        FileLogger.info("[Environment] Perceptions: " + Arrays.toString(perceptions));
         return perceptions;
     }
 
