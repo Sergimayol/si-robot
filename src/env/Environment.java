@@ -2,14 +2,13 @@ package env;
 
 import java.awt.Point;
 import java.util.Arrays;
-import java.util.logging.Logger;
 
 import agent.BaseAgent;
 import agent.Executable;
+import utils.FileLogger;
 
 public class Environment<T extends BaseAgent<Executable>> {
 
-    private Logger logger = Logger.getLogger(Environment.class.getName());
     private boolean[][] map;
     private T agent;
 
@@ -52,10 +51,10 @@ public class Environment<T extends BaseAgent<Executable>> {
 
     public void runNextMovement() {
         boolean[] perceptions = this.getPerceptions(this.agent);
-        logger.info("Perceptions: " + Arrays.toString(perceptions));
+        FileLogger.info("Perceptions: " + Arrays.toString(perceptions));
         this.agent.processInputSensors(perceptions);
         this.agent.checkBC().execute(this.agent);
-        logger.info("Agent position: " + ((BaseAgent<Executable>) agent).getPosition());
+        FileLogger.info("Agent position: " + ((BaseAgent<Executable>) agent).getPosition());
     }
 
     public boolean[] getPerceptions(T agent) {
@@ -76,7 +75,7 @@ public class Environment<T extends BaseAgent<Executable>> {
                 idx++;
             }
         }
-        logger.info("Perceptions: " + Arrays.toString(perceptions));
+        FileLogger.info("Perceptions: " + Arrays.toString(perceptions));
         return perceptions;
     }
 

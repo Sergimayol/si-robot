@@ -7,16 +7,15 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
 import agent.Robot;
 import env.Environment;
+import utils.FileLogger;
 
 public class Tile extends JPanel {
 
-    private transient Logger logger = Logger.getLogger(this.getClass().getSimpleName());
     private transient BufferedImage image;
     private transient BufferedImage robotImage;
     private Color tileColor;
@@ -83,7 +82,7 @@ public class Tile extends JPanel {
         return new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent evt) {
-                logger.info("[TILE] Clicked on tile: " + Tile.this.position);
+                FileLogger.info("[TILE] Clicked on tile: " + Tile.this.position);
                 if (evt.getButton() == MouseEvent.BUTTON1) {
                     Tile.this.isObstacle = !Tile.this.isObstacle;
                     Tile.this.environment.setObstacleIn(Tile.this.position.x, Tile.this.position.y,

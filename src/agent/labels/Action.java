@@ -15,7 +15,6 @@ public enum Action implements Executable {
             ((Robot) robot).setLooking(LookingAt.NORTH);
             Point currPosition = ((Robot) robot).getPosition();
             ((Robot) robot).setPosition(currPosition.x - 1, currPosition.y);
-            System.out.println("MOVE_NORTH");
         }
     },
     MOVE_SOUTH {
@@ -27,7 +26,6 @@ public enum Action implements Executable {
             ((Robot) robot).setLooking(LookingAt.SOUTH);
             Point currPosition = ((Robot) robot).getPosition();
             ((Robot) robot).setPosition(currPosition.x + 1, currPosition.y);
-            System.out.println("MOVE_SOUTH");
         }
     },
     MOVE_EAST {
@@ -39,7 +37,6 @@ public enum Action implements Executable {
             ((Robot) robot).setLooking(LookingAt.EAST);
             Point currPosition = ((Robot) robot).getPosition();
             ((Robot) robot).setPosition(currPosition.x, currPosition.y + 1);
-            System.out.println("MOVE_EAST");
         }
     },
     MOVE_WEST {
@@ -51,14 +48,12 @@ public enum Action implements Executable {
             ((Robot) robot).setLooking(LookingAt.WEST);
             Point currPosition = ((Robot) robot).getPosition();
             ((Robot) robot).setPosition(currPosition.x, currPosition.y - 1);
-            System.out.println("MOVE_WEST");
         }
     },
     DO_NOTHING {
         @Override
         public void execute(Object robot) {
             // Do nothing
-            System.out.println("DO_NOTHING");
         }
     };
 

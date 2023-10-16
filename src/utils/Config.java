@@ -11,4 +11,7 @@ public class Config {
     public static final String OBSTACLE_IMG_PATH = "./assets/obstacle.png";
     public static final String ROBOT_IMG_PATH = "./assets/robot.png";
     public static final String APP_UI_ICON_PATH = "./assets/icon.png";
+    public static final String PATH_TO_LOGS = "./logs/";
+    public static final String LOG_FILE_NAME = "application.log";
+    public static final String LOG_FILE_PATH = PATH_TO_LOGS + LOG_FILE_NAME;
 }

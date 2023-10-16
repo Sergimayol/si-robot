@@ -7,7 +7,6 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -30,11 +29,11 @@ import org.smm.betterswing.utils.DirectionAndPosition;
 import agent.Robot;
 import env.Environment;
 import utils.Config;
+import utils.FileLogger;
 import utils.Helpers;
 
 public class View {
 
-    private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
     private Window window;
     private Map map;
     private Environment<Robot> env;
@@ -54,7 +53,7 @@ public class View {
     }
 
     public void start() {
-        logger.info("[VIEW] Starting view...");
+        FileLogger.info("[VIEW] Starting view...");
         this.window.addMenuBar(this.creatMenuBar());
         this.map.initMapTiles();
         this.initSplitPane();
@@ -63,7 +62,7 @@ public class View {
         body.createFreeSection(this.createInitPage());
         this.window.addSection(body, DirectionAndPosition.POSITION_CENTER, "Main");
         this.window.start();
-        logger.info("[VIEW] View started");
+        FileLogger.info("[VIEW] View started");
     }
 
     private void runRobot(Point robotPosition) {
@@ -90,7 +89,7 @@ public class View {
     }
 
     private JPanel sideBar() {
-        logger.info("[VIEW] Creating side bar...");
+        FileLogger.info("[VIEW] Creating side bar...");
         JPanel sideBar = new JPanel();
         sideBar.setBackground(Color.WHITE);
         sideBar.setLayout(new GridLayout(3, 1));
@@ -138,7 +137,7 @@ public class View {
         roboButton.addActionListener(e -> {
             this.stop = !this.stop;
             final String action = this.stop ? "Stopping" : "Starting";
-            logger.info("[VIEW] " + action + " robot movement ...");
+            FileLogger.info("[VIEW] " + action + " robot movement ...");
             if (!this.stop) {
                 final Point robotPosition = this.map.getRobotPosition();
                 if (robotPosition == null) {
@@ -203,7 +202,7 @@ public class View {
     }
 
     private JPanel createInitPage() {
-        logger.info("[VIEW] Creating init page...");
+        FileLogger.info("[VIEW] Creating init page...");
         JPanel panel = new JPanel();
         JButton button = new JButton("Iniciar Mapa");
         button.addActionListener(e -> {
@@ -218,7 +217,7 @@ public class View {
     }
 
     public void stop() {
-        logger.info("[VIEW] Stopping view...");
+        FileLogger.info("[VIEW] Stopping view...");
         this.window.stop();
     }
 

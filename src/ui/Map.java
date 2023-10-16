@@ -8,7 +8,6 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
@@ -16,10 +15,10 @@ import agent.Robot;
 import env.Environment;
 import utils.Config;
 import utils.Helpers;
+import utils.FileLogger;
 
 public class Map extends JPanel {
 
-    private transient Logger logger = Logger.getLogger(Map.class.getName());
     private Tile[][] tiles;
     private transient Environment<Robot> environment;
 
@@ -78,7 +77,7 @@ public class Map extends JPanel {
                 }
             }
         }
-        logger.info("Obstacle positions: " + obstaclePositions);
+        FileLogger.info("Obstacle positions: " + obstaclePositions);
         return obstaclePositions;
     }
 
