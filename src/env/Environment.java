@@ -51,10 +51,10 @@ public class Environment<T extends BaseAgent<Executable>> {
 
     public void runNextMovement() {
         boolean[] perceptions = this.getPerceptions(this.agent);
-        FileLogger.info("Perceptions: " + Arrays.toString(perceptions));
+        FileLogger.info("[Environment] Perceptions: " + Arrays.toString(perceptions));
         this.agent.processInputSensors(perceptions);
         this.agent.checkBC().execute(this.agent);
-        FileLogger.info("Agent position: " + ((BaseAgent<Executable>) agent).getPosition());
+        FileLogger.info("[Environment] Agent position: " + ((BaseAgent<Executable>) agent).getPosition());
     }
 
     public boolean[] getPerceptions(T agent) {
@@ -75,7 +75,7 @@ public class Environment<T extends BaseAgent<Executable>> {
                 idx++;
             }
         }
-        FileLogger.info("Perceptions: " + Arrays.toString(perceptions));
+        FileLogger.info("[Environment] Perceptions: " + Arrays.toString(perceptions));
         return perceptions;
     }
 

@@ -77,7 +77,7 @@ public class Map extends JPanel {
                 }
             }
         }
-        FileLogger.info("Obstacle positions: " + obstaclePositions);
+        FileLogger.info("[MAP] Obstacle positions: " + obstaclePositions);
         return obstaclePositions;
     }
 
