@@ -83,7 +83,9 @@ public class View {
             tile = this.map.getTile(robotPos.x, robotPos.y);
             tile.setRobot(true);
             this.map.setTile(tile);
-            this.map.repaint();
+            // this.map.repaint();
+            this.map.paintComponent(this.map.getGraphics());
+            this.map.revalidate();
             Helpers.wait(sleepTime);
         }
     }
@@ -174,6 +176,10 @@ public class View {
             this.stop = true;
             this.mapSize = (int) spinnerModel.getValue();
             this.map.changeMapUIsize(this.mapSize, true);
+            this.env = new Environment<>(this.mapSize);
+            this.robot = new Robot();
+            this.env.setAgent(this.robot);
+            this.map.setEnvironment(this.env);
         });
 
         // Crear el JSpinner utilizando el modelo
@@ -229,16 +235,6 @@ public class View {
         this.splitPane.setBorder(null);
     }
 
-    private void resetMap() {
-        map.changeMapUIsize(mapSize, true); // Restablece el mapa al tamaño original
-        map.repaint(); // Actualiza la vista
-    }
-
-    private void cleanMap() {
-        map.cleanMap(); // Limpia el mapa
-        map.repaint(); // Actualiza la vista
-    }
-
     private void showHelpDialog() {
         String helpMessage = "Click derecho: Añadir/Quitar Robot\nClick izquierdo: Añadir/Quitar Obstáculo";
         JOptionPane.showMessageDialog(null, helpMessage, "Ayuda", JOptionPane.INFORMATION_MESSAGE);
@@ -247,23 +243,15 @@ public class View {
     private JMenuBar creatMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("Menú");
-        JMenuItem resetMenuItem = new JMenuItem("Reiniciar");
-        JMenuItem cleanMenuItem = new JMenuItem("Limpiar");
         JMenuItem exitMenuItem = new JMenuItem("Salir");
         JMenuItem helpMenuItem = new JMenuItem("Ayuda");
 
-        resetMenuItem.addActionListener(e -> resetMap());
-        cleanMenuItem.addActionListener(e -> cleanMap());
         exitMenuItem.addActionListener(e -> stop());
         helpMenuItem.addActionListener(e -> showHelpDialog());
 
-        resetMenuItem.setToolTipText("Reiniciar el programa");
-        cleanMenuItem.setToolTipText("Limpiar la pantalla");
         exitMenuItem.setToolTipText("Salir de la aplicación");
         helpMenuItem.setToolTipText("Mostrar ayuda");
 
-        fileMenu.add(cleanMenuItem);
-        fileMenu.add(resetMenuItem);
         fileMenu.add(helpMenuItem);
         fileMenu.add(exitMenuItem);
         menuBar.add(fileMenu);

@@ -88,13 +88,6 @@ public class Map extends JPanel {
         this.revalidate();
     }
 
-    public void cleanMap() {
-        this.removeAll();
-        this.initMapTiles();
-        this.paintComponent(this.getGraphics());
-        this.revalidate();
-    }
-
     public void changeMapSize(int size, boolean initMap) {
         this.tiles = new Tile[size][size];
         if (initMap) {
