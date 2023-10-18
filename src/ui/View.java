@@ -126,6 +126,13 @@ public class View {
 
         final String fontName = "Arial";
 
+        JPanel state = new JPanel();
+        state.setLayout(new BoxLayout(state, BoxLayout.Y_AXIS));
+        JLabel stateLabel = new JLabel(" Estado: Detenido ");
+        stateLabel.setFont(new Font(fontName, Font.PLAIN, 14));
+        stateLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        state.add(stateLabel);
+
         JPanel roboPanel = new JPanel();
         roboPanel.setBackground(Color.WHITE);
         roboPanel.setLayout(new BoxLayout(roboPanel, BoxLayout.Y_AXIS));
@@ -151,7 +158,13 @@ public class View {
                     return;
                 }
                 Thread.startVirtualThread(() -> runRobot(robotPosition));
+                state.setBackground(Color.GREEN);
+                stateLabel.setText(" Estado: Activo ");
+            } else {
+                state.setBackground(Color.RED);
+                stateLabel.setText(" Estado: Detenido ");
             }
+
         });
         roboPanel.add(roboButton);
         actionsPanel.add(Box.createVerticalStrut(5));
@@ -160,6 +173,8 @@ public class View {
         actionsPanel.add(heuristicPanel);
         actionsPanel.add(Box.createVerticalStrut(5));
         actionsPanel.add(roboPanel);
+        actionsPanel.add(Box.createVerticalStrut(5));
+        actionsPanel.add(state);
         actionsPanel.add(Box.createVerticalStrut(5));
         sideBar.add(actionsPanel);
 
