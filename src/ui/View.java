@@ -133,6 +133,14 @@ public class View {
         stateLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         state.add(stateLabel);
 
+        JPanel numObstaculos = new JPanel();
+        numObstaculos.setBackground(Color.WHITE);
+        numObstaculos.setLayout(new BoxLayout(numObstaculos, BoxLayout.Y_AXIS));
+        numObstaculos.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel numObstaculosLabel = new JLabel("Nº de obstáculos: " + this.map.getObstaclePositions().size());
+        numObstaculosLabel.setFont(new Font(fontName, Font.PLAIN, 14));
+        numObstaculos.add(numObstaculosLabel);
+
         JPanel roboPanel = new JPanel();
         roboPanel.setBackground(Color.WHITE);
         roboPanel.setLayout(new BoxLayout(roboPanel, BoxLayout.Y_AXIS));
@@ -158,6 +166,7 @@ public class View {
                     return;
                 }
                 Thread.startVirtualThread(() -> runRobot(robotPosition));
+                numObstaculosLabel.setText("Nº de obstáculos: " + this.map.getObstaclePositions().size());
                 state.setBackground(Color.GREEN);
                 stateLabel.setText(" Estado: Activo ");
             } else {
@@ -167,6 +176,7 @@ public class View {
 
         });
         roboPanel.add(roboButton);
+
         actionsPanel.add(Box.createVerticalStrut(5));
         actionsPanel.add(solveStrategyPanel);
         actionsPanel.add(Box.createVerticalStrut(15));
@@ -175,6 +185,8 @@ public class View {
         actionsPanel.add(roboPanel);
         actionsPanel.add(Box.createVerticalStrut(5));
         actionsPanel.add(state);
+        actionsPanel.add(Box.createVerticalStrut(10));
+        actionsPanel.add(numObstaculos);
         actionsPanel.add(Box.createVerticalStrut(5));
         sideBar.add(actionsPanel);
 
