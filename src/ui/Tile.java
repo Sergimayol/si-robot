@@ -10,6 +10,8 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
+import org.jfree.chart.title.Title;
+
 import agent.Robot;
 import env.Environment;
 import utils.FileLogger;
@@ -88,8 +90,11 @@ public class Tile extends JPanel {
                     Tile.this.environment.setObstacleIn(Tile.this.position.x, Tile.this.position.y,
                             Tile.this.isObstacle);
                 }
-                if (evt.getButton() == MouseEvent.BUTTON3) {
+                Robot robot = Tile.this.environment.getAgent();
+                if (evt.getButton() == MouseEvent.BUTTON3 && robot.isDefaultPosition()) {
                     Tile.this.isRobot = !Tile.this.isRobot;
+                    robot.setPosition(Tile.this.position.x, Tile.this.position.y);
+                    Tile.this.environment.setAgent(robot);
                 }
                 Tile.this.repaint();
             }

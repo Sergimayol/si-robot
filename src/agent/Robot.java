@@ -40,6 +40,10 @@ public class Robot extends BaseAgent<Executable> {
         this.direction = dir;
     }
 
+    public boolean isDefaultPosition() {
+        return this.position.x == -1 && this.position.y == -1;
+    }
+
     /**
      * NORTE = x4 and not x1 -> (s8 v s1) and not (s2 v s3)
      * OESTE = x3 and not x4 -> (s6 v s7) and not (s8 v s1)

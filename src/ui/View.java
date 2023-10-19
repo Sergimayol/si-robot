@@ -48,6 +48,7 @@ public class View {
         this.mapSize = 10;
         this.robot = new Robot();
         this.env = new Environment<>(this.mapSize);
+        this.env.setAgent(this.robot);
         this.map = new Map(this.mapSize, this.env);
         this.stop = true;
     }
@@ -65,17 +66,10 @@ public class View {
         FileLogger.info("[VIEW] View started");
     }
 
-    private void runRobot(Point robotPosition) {
-        List<Point> obstaclePositions = this.map.getObstaclePositions();
-        this.robot.setPosition(robotPosition.x, robotPosition.y);
-        this.map.setEnvironment(this.env);
-        this.env.setAgent(this.robot);
-        for (Point obstaclePosition : obstaclePositions) {
-            this.env.setObstacleIn(obstaclePosition.x, obstaclePosition.y, true);
-        }
+    private void runRobot() {
+        // TODO: Maybe hacer que el tiempo de sleep sea configurable
         final int sleepTime = 500;
         while (!this.stop) {
-            // env.printMap();
             Tile tile = this.map.getTile(this.robot.getPosition().x, this.robot.getPosition().y);
             tile.setRobot(false);
             this.env.runNextMovement();
@@ -83,7 +77,6 @@ public class View {
             tile = this.map.getTile(robotPos.x, robotPos.y);
             tile.setRobot(true);
             this.map.setTile(tile);
-            // this.map.repaint();
             this.map.paintComponent(this.map.getGraphics());
             this.map.revalidate();
             Helpers.wait(sleepTime);
@@ -155,25 +148,17 @@ public class View {
             this.stop = !this.stop;
             final String action = this.stop ? "Stopping" : "Starting";
             FileLogger.info("[VIEW] " + action + " robot movement ...");
-            if (!this.stop) {
-                final Point robotPosition = this.map.getRobotPosition();
-                if (robotPosition == null) {
-                    // Igual es mejor opción que si no se ha seleccionado un punto de inicio, se
-                    // seleccione uno aleatorio o (0, 0)
-                    JOptionPane.showMessageDialog(null, "No se ha encontrado un robot en el mapa", "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                    this.stop = !this.stop;
-                    return;
-                }
-                Thread.startVirtualThread(() -> runRobot(robotPosition));
-                numObstaculosLabel.setText("Nº de obstáculos: " + this.map.getObstaclePositions().size());
-                state.setBackground(Color.GREEN);
-                stateLabel.setText(" Estado: Activo ");
-            } else {
-                state.setBackground(Color.RED);
-                stateLabel.setText(" Estado: Detenido ");
+            if (this.env.getAgent().isDefaultPosition()) {
+                JOptionPane.showMessageDialog(null, "No se ha encontrado un robot en el mapa", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                this.stop = !this.stop;
+                return;
             }
-
+            Thread.startVirtualThread(this::runRobot);
+            numObstaculosLabel.setText("Nº de obstáculos: " + this.map.getObstaclePositions().size());
+            final boolean applyGreen = !this.stop;
+            state.setBackground(applyGreen ? Color.GREEN : Color.RED);
+            stateLabel.setText(" Estado: " + (applyGreen ? "Ejecutando" : "Detenido"));
         });
         roboPanel.add(roboButton);
 
