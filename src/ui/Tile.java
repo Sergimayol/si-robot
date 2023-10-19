@@ -10,8 +10,6 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
-import org.jfree.chart.title.Title;
-
 import agent.Robot;
 import env.Environment;
 import utils.FileLogger;
