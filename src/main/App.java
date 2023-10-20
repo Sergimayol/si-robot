@@ -9,5 +9,4 @@ public class App {
         View view = new View();
         view.start();
     }
-
 }

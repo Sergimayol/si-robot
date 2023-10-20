@@ -17,9 +17,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 
 import org.smm.betterswing.Section;
 import org.smm.betterswing.Window;
@@ -40,6 +42,7 @@ public class View {
     private JSplitPane splitPane;
     private int mapSize;
     private boolean stop;
+    private int sleepTime;
 
     public View() {
         this.window = new Window(Config.VIEW_MAIN_WIN_CONFIG_PATH);
@@ -50,6 +53,7 @@ public class View {
         this.env.setAgent(this.robot);
         this.map = new Map(this.mapSize, this.env);
         this.stop = true;
+        this.sleepTime = 500;
     }
 
     public void start() {
@@ -57,7 +61,6 @@ public class View {
         this.window.addMenuBar(this.creatMenuBar());
         this.map.initMapTiles();
         this.initSplitPane();
-        this.splitPane.setRightComponent(this.sideBar());
         Section body = new Section();
         body.createFreeSection(this.createInitPage());
         this.window.addSection(body, DirectionAndPosition.POSITION_CENTER, "Main");
@@ -66,8 +69,6 @@ public class View {
     }
 
     private void runRobot() {
-        // TODO: Maybe hacer que el tiempo de sleep sea configurable
-        final int sleepTime = 500;
         while (!this.stop) {
             Tile tile = this.map.getTile(this.robot.getPosition().x, this.robot.getPosition().y);
             tile.setRobot(false);
@@ -86,19 +87,26 @@ public class View {
         FileLogger.info("[VIEW] Creating side bar...");
         JPanel sideBar = new JPanel();
         sideBar.setBackground(Color.WHITE);
-        sideBar.setLayout(new GridLayout(3, 1));
+        sideBar.setLayout(new GridLayout(4, 1));
 
+        final String fontName = "Arial";
         // Logo panel
         JPanel logoPanel = new JPanel();
         logoPanel.setBackground(Color.WHITE);
         JPanel iconPanel = new JPanel();
+        iconPanel.setLayout(new BoxLayout(iconPanel, BoxLayout.Y_AXIS));
         iconPanel.setBackground(Color.WHITE);
         JLabel icon = new JLabel();
         icon.setBackground(Color.WHITE);
-        icon.setIcon(Helpers.escalateImageIcon(Config.APP_UI_ICON_PATH, 128, 128));
+        icon.setIcon(Helpers.escalateImageIcon(Config.APP_UI_ICON_PATH, 90, 90));
         iconPanel.add(icon);
+        JLabel logoText = new JLabel("Robot Inteligente");
+        logoText.setFont(new Font(fontName, Font.ITALIC, 16));
+        logoText.setAlignmentX(Component.CENTER_ALIGNMENT);
+        icon.setAlignmentX(Component.CENTER_ALIGNMENT);
+        iconPanel.add(logoText);
         logoPanel.add(iconPanel);
-        sideBar.add(logoPanel);
+        logoPanel.add(Box.createVerticalStrut(10));
 
         // Actions panel
         JPanel actionsPanel = new JPanel();
@@ -106,21 +114,9 @@ public class View {
         actionsPanel.setLayout(new BoxLayout(actionsPanel, BoxLayout.Y_AXIS));
         actionsPanel.setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 8));
 
-        JPanel solveStrategyPanel = new JPanel();
-        solveStrategyPanel.setBackground(Color.WHITE);
-        solveStrategyPanel.setLayout(new BoxLayout(solveStrategyPanel, BoxLayout.Y_AXIS));
-        solveStrategyPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-
-        JPanel heuristicPanel = new JPanel();
-        heuristicPanel.setLayout(new BoxLayout(heuristicPanel, BoxLayout.Y_AXIS));
-        heuristicPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        heuristicPanel.setBackground(Color.WHITE);
-
-        final String fontName = "Arial";
-
         JPanel state = new JPanel();
         state.setLayout(new BoxLayout(state, BoxLayout.Y_AXIS));
-        JLabel stateLabel = new JLabel(" Estado: Detenido ");
+        JLabel stateLabel = new JLabel(" Iniciar robot ");
         stateLabel.setFont(new Font(fontName, Font.PLAIN, 14));
         stateLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         state.add(stateLabel);
@@ -136,12 +132,13 @@ public class View {
         JPanel roboPanel = new JPanel();
         roboPanel.setBackground(Color.WHITE);
         roboPanel.setLayout(new BoxLayout(roboPanel, BoxLayout.Y_AXIS));
-        JButton roboButton = new JButton(Helpers.escalateImageIcon(Config.APP_UI_ICON_PATH, 64, 64));
+        final int btnIconSize = 32;
+        JButton roboButton = new JButton(Helpers.escalateImageIcon(Config.PAUSE_IMG_PATH, btnIconSize, btnIconSize));
         roboButton.setFont(new Font(fontName, Font.PLAIN, 14));
         roboButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         roboButton.setMaximumSize(new Dimension(
-                (int) roboButton.getPreferredSize().getWidth() + 10,
-                (int) roboButton.getPreferredSize().getHeight() + 5));
+                (int) roboButton.getPreferredSize().getWidth(),
+                (int) roboButton.getPreferredSize().getHeight()));
 
         roboButton.addActionListener(e -> {
             this.stop = !this.stop;
@@ -153,38 +150,39 @@ public class View {
                 this.stop = !this.stop;
                 return;
             }
+            final String btnICon = this.stop ? Config.PAUSE_IMG_PATH : Config.PLAY_IMG_PATH;
+            roboButton.setIcon(Helpers.escalateImageIcon(btnICon, btnIconSize, btnIconSize));
             Thread.startVirtualThread(this::runRobot);
             numObstaculosLabel.setText("Nº de obstáculos: " + this.map.getObstaclePositions().size());
             final boolean applyGreen = !this.stop;
             state.setBackground(applyGreen ? Color.GREEN : Color.RED);
-            stateLabel.setText(" Estado: " + (applyGreen ? "Ejecutando" : "Detenido"));
+            stateLabel.setText(" " + (applyGreen ? "Ejecutando" : "Detenido"));
         });
         roboPanel.add(roboButton);
 
-        actionsPanel.add(Box.createVerticalStrut(5));
-        actionsPanel.add(solveStrategyPanel);
-        actionsPanel.add(Box.createVerticalStrut(15));
-        actionsPanel.add(heuristicPanel);
-        actionsPanel.add(Box.createVerticalStrut(5));
+        actionsPanel.add(Box.createVerticalStrut(10));
         actionsPanel.add(roboPanel);
         actionsPanel.add(Box.createVerticalStrut(5));
         actionsPanel.add(state);
-        actionsPanel.add(Box.createVerticalStrut(10));
-        actionsPanel.add(numObstaculos);
         actionsPanel.add(Box.createVerticalStrut(5));
-        sideBar.add(actionsPanel);
+        actionsPanel.add(numObstaculos);
 
         // Add size to the puzzle
         JPanel puzzleSizePanel = new JPanel();
         puzzleSizePanel.setBackground(Color.WHITE);
         puzzleSizePanel.setLayout(new BoxLayout(puzzleSizePanel, BoxLayout.Y_AXIS));
         JLabel puzzleSizeLabel = new JLabel("Tamaño del mapa:");
+        puzzleSizeLabel.setFont(new Font(fontName, Font.PLAIN, 14));
 
         // Crear un modelo para el JSpinner con un rango de valores válidos
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(this.mapSize, 1, 50, 1);
         spinnerModel.addChangeListener(e -> {
             // Solo se puede cambiar el tamaño del mapa si el robot no está en ejecución
             this.stop = true;
+            final String btnICon = this.stop ? Config.PAUSE_IMG_PATH : Config.PLAY_IMG_PATH;
+            state.setBackground(!this.stop ? Color.GREEN : Color.RED);
+            stateLabel.setText(" " + (!this.stop ? "Ejecutando" : "Detenido"));
+            roboButton.setIcon(Helpers.escalateImageIcon(btnICon, btnIconSize, btnIconSize));
             this.mapSize = (int) spinnerModel.getValue();
             this.map.changeMapUIsize(this.mapSize, true);
             this.env = new Environment<>(this.mapSize);
@@ -201,19 +199,59 @@ public class View {
 
         // Change the size of the puzzle to be the same as the label size
         puzzleSize.setMaximumSize(new Dimension(
-                (int) puzzleSizeLabel.getPreferredSize().getWidth() + 20,
+                (int) puzzleSizeLabel.getPreferredSize().getWidth(),
                 (int) puzzleSizeLabel.getPreferredSize().getHeight() + 15));
 
         // Put the same start location for both components
         puzzleSizeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         puzzleSize.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Agregar el JSpinner al panel puzzleSizePanel
         puzzleSizePanel.add(puzzleSizeLabel);
         puzzleSizePanel.add(puzzleSize);
-        puzzleSizePanel.add(Box.createVerticalStrut(20));
 
+        JPanel velocityPanel = new JPanel();
+        velocityPanel.setBackground(Color.WHITE);
+        velocityPanel.setLayout(new BoxLayout(velocityPanel, BoxLayout.Y_AXIS));
+        JLabel velocityLabel = new JLabel("Velocidad:");
+        velocityLabel.setFont(new Font(fontName, Font.PLAIN, 14));
+        final int maxVal = 1500;
+        final int minVal = 100;
+        JSlider slider = new JSlider(SwingConstants.HORIZONTAL, minVal, maxVal, maxVal / 2);
+        slider.addChangeListener(e -> View.this.sleepTime = slider.getValue());
+        // Take in count the min and max values of the slider
+        final int increment = (maxVal - minVal) / 2;
+        // Set the labels to be painted on the slider
+        slider.setPaintTicks(true);
+        // Set the spacing for the labels on the slider
+        slider.setMajorTickSpacing(increment);
+        // Set the labels to be painted on the slider
+        slider.setPaintLabels(true);
+        // Add positions label in the slider
+        slider.setLabelTable(slider.createStandardLabels(increment));
+        slider.setMaximumSize(new Dimension(
+                (int) puzzleSizeLabel.getPreferredSize().getWidth(),
+                (int) puzzleSizeLabel.getPreferredSize().getHeight() + 30));
+        // Put the same start location for both components
+        velocityLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        slider.setAlignmentX(Component.CENTER_ALIGNMENT);
+        velocityPanel.add(velocityLabel);
+        velocityPanel.add(slider);
+
+        // Set the preferred size of the panels to be the same size as the logoPanel
+        actionsPanel.setPreferredSize(new Dimension(
+                (int) logoPanel.getPreferredSize().getWidth(),
+                (int) logoPanel.getPreferredSize().getHeight()));
+        puzzleSizePanel.setPreferredSize(new Dimension(
+                (int) logoPanel.getPreferredSize().getWidth(),
+                (int) logoPanel.getPreferredSize().getHeight()));
+        velocityPanel.setPreferredSize(new Dimension(
+                (int) logoPanel.getPreferredSize().getWidth(),
+                (int) logoPanel.getPreferredSize().getHeight()));
+
+        sideBar.add(logoPanel);
+        sideBar.add(actionsPanel);
         sideBar.add(puzzleSizePanel);
+        sideBar.add(velocityPanel);
 
         return sideBar;
     }
@@ -223,11 +261,13 @@ public class View {
         JPanel panel = new JPanel();
         JButton button = new JButton("Iniciar Mapa");
         button.addActionListener(e -> {
+            this.splitPane.setRightComponent(this.sideBar());
             this.map.paintComponent(this.map.getGraphics());
-            splitPane.setLeftComponent(this.map);
+            this.splitPane.setLeftComponent(this.map);
             Section body = new Section();
             body.createJSplitPaneSection(splitPane);
             this.window.updateSection(body, "Main", DirectionAndPosition.POSITION_CENTER);
+            // TODO: Improves this section with a better UI
         });
         panel.add(button);
         return panel;
@@ -251,18 +291,31 @@ public class View {
         JOptionPane.showMessageDialog(null, helpMessage, "Ayuda", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    private void resetMap() {
+        this.stop = true;
+        this.map.changeMapUIsize(this.mapSize, true);
+        this.env = new Environment<>(this.mapSize);
+        this.robot = new Robot();
+        this.env.setAgent(this.robot);
+        this.map.setEnvironment(this.env);
+    }
+
     private JMenuBar creatMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("Menú");
         JMenuItem exitMenuItem = new JMenuItem("Salir");
         JMenuItem helpMenuItem = new JMenuItem("Ayuda");
+        JMenuItem resetMapItem = new JMenuItem("Reiniciar mapa");
 
-        exitMenuItem.addActionListener(e -> stop());
-        helpMenuItem.addActionListener(e -> showHelpDialog());
+        exitMenuItem.addActionListener(e -> this.stop());
+        helpMenuItem.addActionListener(e -> this.showHelpDialog());
+        resetMapItem.addActionListener(e -> this.resetMap());
 
         exitMenuItem.setToolTipText("Salir de la aplicación");
         helpMenuItem.setToolTipText("Mostrar ayuda");
+        resetMapItem.setToolTipText("Reiniciar el mapa");
 
+        fileMenu.add(resetMapItem);
         fileMenu.add(helpMenuItem);
         fileMenu.add(exitMenuItem);
         menuBar.add(fileMenu);

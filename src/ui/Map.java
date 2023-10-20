@@ -81,6 +81,13 @@ public class Map extends JPanel {
         return obstaclePositions;
     }
 
+    public void resetMap() {
+        this.removeAll();
+        this.initMapTiles();
+        this.paintComponent(this.getGraphics());
+        this.revalidate();
+    }
+
     public void changeMapUIsize(int size, boolean initMap) {
         this.removeAll();
         this.changeMapSize(size, initMap);
