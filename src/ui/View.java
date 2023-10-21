@@ -259,7 +259,12 @@ public class View {
     private JPanel createInitPage() {
         FileLogger.info("[VIEW] Creating init page...");
         JPanel panel = new JPanel();
-        JButton button = new JButton("Iniciar Mapa");
+        final String fontName = "Arial";
+        panel.setBackground(Color.WHITE);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        JLabel label = new JLabel("Práctica 1 - Robot con pasillos estrechos");
+        label.setFont(new Font(fontName, Font.ITALIC, 22));
+        JButton button = new JButton("Iniciar Simulación");
         button.addActionListener(e -> {
             this.splitPane.setRightComponent(this.sideBar());
             this.map.paintComponent(this.map.getGraphics());
@@ -267,10 +272,40 @@ public class View {
             Section body = new Section();
             body.createJSplitPaneSection(splitPane);
             this.window.updateSection(body, "Main", DirectionAndPosition.POSITION_CENTER);
-            // TODO: Improves this section with a better UI
         });
+        JLabel consejoTile = new JLabel(
+                "Ayuda: ");
+        consejoTile.setFont(new Font(fontName, Font.ITALIC, 16));
+        JLabel consejo1 = new JLabel(
+                "1. Para añadir/quitar obstáculos, haz click izquierdo en el mapa");
+        consejo1.setFont(new Font(fontName, Font.ITALIC, 14));
+        JLabel consejo2 = new JLabel(
+                "2. Para añadir/quitar el robot, haz click derecho en el mapa");
+        consejo2.setFont(new Font(fontName, Font.ITALIC, 14));
+
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        consejo1.setAlignmentX(Component.CENTER_ALIGNMENT);
+        consejo2.setAlignmentX(Component.CENTER_ALIGNMENT);
+        consejoTile.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        panel.add(label);
+        panel.add(Box.createVerticalStrut(10));
+        panel.add(consejoTile);
+        panel.add(Box.createVerticalStrut(10));
+        panel.add(consejo1);
+        panel.add(Box.createVerticalStrut(5));
+        panel.add(consejo2);
+        panel.add(Box.createVerticalStrut(10));
         panel.add(button);
-        return panel;
+
+        JPanel mainPanel = new JPanel(new GridLayout(3, 1));
+        mainPanel.setBackground(Color.WHITE);
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(panel);
+        mainPanel.add(Box.createVerticalStrut(10));
+
+        return mainPanel;
     }
 
     public void stop() {
